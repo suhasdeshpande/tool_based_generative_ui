@@ -76,17 +76,7 @@ class ToolBasedGenerativeUIFlow(CopilotKitFlow[AgentState]):
         """
         Standard chat node for haiku generation.
         """
-        current_haiku_info = "No haiku created yet"
-        if self.state.haiku:
-            current_haiku_info = f"Japanese: {' / '.join(self.state.haiku['japanese'])}\nEnglish: {' / '.join(self.state.haiku['english'])}\nImages: {', '.join(self.state.haiku['image_names'])}"
-
-        system_prompt = f"""
-        You are a helpful assistant for generating haikus.
-        To generate a haiku, you MUST use the generate_haiku tool.
-        When you generate the haiku, DO NOT repeat it as a message.
-        Just briefly acknowledge the creation. 2 sentences max.
-        This is the current state of the haiku: ----\n {current_haiku_info}\n-----
-        """
+        system_prompt = "You assist the user in generating a haiku. When generating a haiku using the 'generate_haiku' tool, you MUST also select exactly 3 image filenames from the following list that are most relevant to the haiku's content or theme. Return the filenames in the 'image_names' parameter. Dont provide the relavent image names in your final response to the user. "
 
         logger.info(f"System prompt: {system_prompt}")
 
@@ -140,10 +130,7 @@ class ToolBasedGenerativeUIFlow(CopilotKitFlow[AgentState]):
             assistant_message = {"role": "assistant", "content": final_response}
             self.state.conversation_history.append(assistant_message)
 
-            return json.dumps({
-                "response": final_response,
-                "id": self.state.id
-            })
+            return final_response
 
         except Exception as e:
             logger.error(f"An error occurred: {str(e)}")
