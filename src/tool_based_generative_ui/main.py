@@ -167,7 +167,6 @@ def kickoff():
         "haiku": None  # Initialize haiku field
     })
     logger.info(f"Response: {result}")
-    return result
 
 def plot():
     tool_based_generative_ui_flow = ToolBasedGenerativeUIFlow()
